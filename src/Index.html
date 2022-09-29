@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style type="text/css">
+        * { font-size: 12px; }
+        .main { border: 1px solid #1883d7; position: absolute; top: 200px; left: 500px; width: 200px; height: 200px; overflow: hidden; }
+        .head { position: absolute; height: 28px; line-height: 28px; padding-left: 20px; background: url(img/mine.png) no-repeat 2px; }
+        .menu { position: absolute; top: 28px; height: 18px; line-height: 18px; border-bottom: 2px solid #f0f0f0; width: 100%; }
+        .item { padding-left: 10px; cursor: pointer; width: 40px; border: 1px solid #fff; }
+            .item.hover { border: 1px solid #91c9f7; background-color: #cce8ff; }
+        .content { position: absolute; background-color: #c0c0c0; width: 100%; height: 100%; top: 50px; left: 2px; }
+        .content1 { position: absolute; border: 2px solid #808080; height: 33px; top: 6px; left: 5px; right: 6px; border-color: #808080 #fff #fff #808080; }
+        .content2 { position: absolute; border: 2px solid #808080; height: 63px; top: 45px; left: 5px; right: 6px; border-color: #808080 #fff #fff #808080; }
+        .menu2 { position: absolute; display: none; z-index: 2; width: 100px; background-color: #f2f2f2; border: 1px solid #ccc; padding: 2px; }
+            .menu2 div { line-height: 22px; padding-left: 25px; cursor: pointer; margin: 0 1px; }
+                .menu2 div.hover { background-color: #90c8f6; }
+                .menu2 div.selected { background-image: url(img/selected.png); background-repeat: no-repeat; }
+    </style>
+</head>
+<body>
+    <div id="main" class="main" style="">
+        <div class="head" style="">扫雷</div>
+        <div class="menu">
+            <div class="item" id="gameMenu"> 游戏 </div>
+            <div class="menu2">
+                <div level="Level1">初级</div>
+                <div level="Level2">中级</div>
+                <div level="Level3">高级</div>
+                <div level="Custom">自定义</div>
+            </div>
+        </div>
+        <div class="content">
+            <div id="TallyContainer" class="content1"></div>
+            <div id="MineContainer" class="content2"></div>
+        </div>
+    </div>
+
+    <script src="Game.js"></script>
+    <script src="Layer.js"></script>
+    <script src="Tally.js"></script>
+    <script src="Item.js"></script>
+    <script type="text/javascript">
+        var LevelKey = "Level2";
+
+        var gameMenuElement = document.getElementById("gameMenu");
+        var menu2Element = document.getElementsByClassName("menu2")[0];
+        gameMenuElement.onmouseover = function () {
+            this.classList.add("hover")
+        }
+        gameMenuElement.onmouseout = function () {
+            this.classList.remove("hover")
+        }
+        gameMenuElement.onclick = function () {
+            menu2Element.style.display = "block";
+        }
+        menu2Element.onclick = function () {
+            this.style.display = "none";
+        }
+
+        var divArr = menu2Element.getElementsByTagName("div");
+        for (var i = 0; i < divArr.length; i++) {
+            var item2 = divArr[i];
+            item2.onmouseover = function () {
+                this.classList.add("hover")
+            }
+            item2.onmouseout = function () {
+                this.classList.remove("hover")
+            }
+            item2.onclick = function () {
+                var selectedElement = document.getElementsByClassName("selected");
+                for (var i = 0; i < selectedElement.length; i++) {
+                    selectedElement[i].classList.remove("selected");
+                }
+                this.classList.add("selected");
+                LevelKey = this.getAttribute("level");
+
+                if (LevelKey == "Custom") {
+                    while (true) {
+                        var messageStr = "自定义雷区 格式（宽度*高度*雷数）";
+                        var defaultStr = "30*16*99";
+                        //点击取消 返回null
+                        //如果什么都不写 并 点击确定的话，返回一个空字符串
+                        var content = window.prompt(messageStr, defaultStr);
+                        var arr = content.split("*");
+                        var w = parseInt(arr[0]);
+                        var h = parseInt(arr[1]);
+                        var mine = parseInt(arr[2]);
+                        if (!w || !h || !mine) {
+                            alert("输入不合法,重新输入！");
+                        } else {
+                            break;
+                        }
+                    }
+                    LevelKey = "a_" + Date.parse(new Date());
+                    Level[LevelKey] = {
+                        W: w, H: h, Mine: mine
+                    };
+                }
+                gameGo();
+            }
+        }
+        //屏蔽流量器默认右击菜单
+        document.oncontextmenu = function () {
+            return false;
+        };
+        var game = null;
+
+        function gameGo() {
+            var TallyContainerElement = document.getElementById("TallyContainer");
+            var MineContainerElement = document.getElementById("MineContainer");
+
+            var childs = TallyContainerElement.childNodes;
+            for (var i = childs.length - 1; i >= 0; i--) {
+                TallyContainerElement.removeChild(childs[i]);
+            }
+            childs = MineContainerElement.childNodes;
+            for (var i = childs.length - 1; i >= 0; i--) {
+                MineContainerElement.removeChild(childs[i]);
+            }
+
+            game = new Game(Level[LevelKey]);
+            game.init();
+            game.Face._div.onclick = function () {
+                gameGo();
+            }
+        }
+        gameGo();
+
+    </script>
+</body>
+</html>
