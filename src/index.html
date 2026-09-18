@@ -9,8 +9,10 @@
         .main { border: 1px solid #1883d7; position: absolute; top: 200px; left: 500px; width: 200px; height: 200px; overflow: hidden; }
         .head { position: absolute; height: 28px; line-height: 28px; padding-left: 20px; background: url(img/mine.png) no-repeat 2px; }
         .menu { position: absolute; top: 28px; height: 18px; line-height: 18px; border-bottom: 2px solid #f0f0f0; width: 100%; }
-        .item { padding-left: 10px; cursor: pointer; width: 40px; border: 1px solid #fff; }
+        .item { padding-left: 10px; cursor: pointer; width: 40px; border: 1px solid #fff; display: inline-block; }
             .item.hover { border: 1px solid #91c9f7; background-color: #cce8ff; }
+        .item.github { width: auto; padding-right: 10px; color: #000; text-decoration: none; }
+            .item.github:hover { border: 1px solid #91c9f7; background-color: #cce8ff; }
         .content { position: absolute; background-color: #c0c0c0; width: 100%; height: 100%; top: 50px; left: 2px; }
         .content1 { position: absolute; border: 2px solid #808080; height: 33px; top: 6px; left: 5px; right: 6px; border-color: #808080 #fff #fff #808080; }
         .content2 { position: absolute; border: 2px solid #808080; height: 63px; top: 45px; left: 5px; right: 6px; border-color: #808080 #fff #fff #808080; }
@@ -25,6 +27,7 @@
         <div class="head" style="">扫雷</div>
         <div class="menu">
             <div class="item" id="gameMenu"> 游戏 </div>
+            <a class="item github" href="https://github.com/Oliver59/Twgdh.Minesweeper" target="_blank" rel="noopener noreferrer"> GitHub </a>
             <div class="menu2">
                 <div level="Level1">初级</div>
                 <div level="Level2">中级</div>
